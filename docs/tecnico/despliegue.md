@@ -56,14 +56,13 @@ para que Apache sirva `index.html` en cualquier ruta de la SPA.
 
 ## Documentación
 
-Se publica sola en **GitHub Pages** (`https://dreinova.github.io/situr-docs/`) con cada push a `main`, mediante
+Se publica sola en **https://situr-docs.oblicua.co** (GitHub Pages) con cada push a `main`, mediante
 `.github/workflows/deploy.yml`. El progreso se ve en la pestaña **Actions** del repositorio `Dreinova/situr-docs`.
 
-Para usar un dominio propio (p. ej. `docs.situr.visitatenjo.com`):
+Para cambiar de dominio:
 
-1. Crear `static/CNAME` con el dominio.
-2. En el workflow, agregar al paso de compilación `env: { DOCS_URL: https://docs.situr.visitatenjo.com, DOCS_BASE_URL: / }`.
-3. Configurar el DNS (registro `CNAME` hacia `dreinova.github.io`) y el dominio en Settings → Pages.
+1. Actualizar `static/CNAME` y el valor por defecto de `url` en `docusaurus.config.ts`.
+2. Apuntar el DNS (registro `CNAME` hacia `dreinova.github.io`) y cambiar el dominio en Settings → Pages.
 
 ## Día del cambio
 

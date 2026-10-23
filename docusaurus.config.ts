@@ -4,10 +4,10 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // Se ejecuta en Node.js: aquí no va código de navegador.
 
-// Publicado en GitHub Pages: https://dreinova.github.io/situr-docs/
-// Con un dominio propio (p. ej. docs.situr.visitatenjo.com) basta con DOCS_URL=https://… y DOCS_BASE_URL=/
-const url = process.env.DOCS_URL ?? 'https://dreinova.github.io';
-const baseUrl = process.env.DOCS_BASE_URL ?? '/situr-docs/';
+// Publicado en GitHub Pages con dominio propio (repo Dreinova/situr-docs).
+// Sin dominio propio sería DOCS_URL=https://dreinova.github.io y DOCS_BASE_URL=/situr-docs/
+const url = process.env.DOCS_URL ?? 'https://situr-docs.oblicua.co';
+const baseUrl = process.env.DOCS_BASE_URL ?? '/';
 
 const config: Config = {
   title: 'SITUR Tenjo',
