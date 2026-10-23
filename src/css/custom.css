@@ -1,0 +1,163 @@
+/*
+ * Piel de la documentación: misma paleta que el CRM, derivada del rojo de Visita Tenjo (#F70017).
+ * - Primario #D90E18 (contraste 5,22 sobre blanco) para enlaces y botones.
+ * - #F70017 solo en superficies y acentos (contraste 4,23: no para texto normal).
+ * - En modo oscuro el rojo se aclara (#FE7366) para mantener el contraste sobre fondo vino.
+ */
+:root {
+  --ifm-color-primary: #d90e18;
+  --ifm-color-primary-dark: #c30d16;
+  --ifm-color-primary-darker: #b7000e;
+  --ifm-color-primary-darkest: #8f040b;
+  --ifm-color-primary-light: #f70017;
+  --ifm-color-primary-lighter: #ff3a46;
+  --ifm-color-primary-lightest: #fe7366;
+
+  --situr-vivo: #f70017;
+  --situr-vino: #400000;
+  --situr-papel: #fbf8f7;
+  --situr-linea: #ebe2e1;
+  --situr-niebla: #766866;
+  --situr-tinta: #2a1b19;
+
+  --ifm-font-family-base: 'Public Sans', system-ui, sans-serif;
+  --ifm-heading-font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  --ifm-font-family-monospace: 'IBM Plex Mono', ui-monospace, monospace;
+  --ifm-font-color-base: var(--situr-tinta);
+  --ifm-background-color: #ffffff;
+  --ifm-color-emphasis-200: var(--situr-linea);
+  --ifm-toc-border-color: var(--situr-linea);
+  --ifm-hr-border-color: var(--situr-linea);
+  --ifm-code-font-size: 92%;
+  --ifm-global-radius: 10px;
+  --ifm-navbar-height: 4.25rem;
+  --ifm-footer-background-color: var(--situr-vino);
+  --ifm-menu-color-background-active: #fff4f2;
+  --docusaurus-highlighted-code-line-bg: rgba(217, 14, 24, 0.08);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #fe7366;
+  --ifm-color-primary-dark: #fe5a4b;
+  --ifm-color-primary-darker: #fe4d3d;
+  --ifm-color-primary-darkest: #ff3a46;
+  --ifm-color-primary-light: #ffa69a;
+  --ifm-color-primary-lighter: #ffb9b0;
+  --ifm-color-primary-lightest: #ffcdc6;
+  --ifm-background-color: #1b1110;
+  --ifm-background-surface-color: #241716;
+  --ifm-font-color-base: #f4ebea;
+  --ifm-toc-border-color: #3a2826;
+  --ifm-hr-border-color: #3a2826;
+  --ifm-menu-color-background-active: rgba(254, 115, 102, 0.12);
+  --ifm-footer-background-color: #120707;
+  --docusaurus-highlighted-code-line-bg: rgba(254, 115, 102, 0.12);
+}
+
+/* ---------- Barra superior: rojo de marca con logo blanco ---------- */
+/* #D90E18 y no #F70017: los enlaces blancos de 15 px necesitan contraste ≥ 4,5 */
+.navbar--primary {
+  background-color: #d90e18;
+  box-shadow: inset 0 -3px 0 var(--situr-vivo);
+}
+[data-theme='dark'] .navbar--primary {
+  background-color: var(--situr-vino);
+}
+.navbar__logo {
+  height: 2.6rem;
+}
+.navbar__brand {
+  gap: 0.4rem;
+}
+.navbar__title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding-left: 0.85rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.45);
+}
+.navbar--primary .navbar__link,
+.navbar--primary .navbar__title,
+.navbar--primary .navbar__toggle,
+.navbar--primary .clean-btn {
+  color: #fff;
+}
+.navbar--primary .navbar__link:hover,
+.navbar--primary .navbar__link--active {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- Tipografía ---------- */
+h1, h2, h3 {
+  letter-spacing: -0.015em;
+}
+.markdown h1:first-child {
+  font-size: 2.4rem;
+}
+.markdown > h2 {
+  margin-top: 2.5rem;
+}
+
+/* ---------- Menú lateral: indicador activo como en el CRM ---------- */
+.menu__link--active:not(.menu__link--sublist) {
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--situr-vivo);
+}
+
+/* ---------- Capturas de pantalla ---------- */
+.markdown img[src*='capturas'] {
+  border: 1px solid var(--situr-linea);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px -12px rgba(42, 27, 25, 0.35);
+}
+[data-theme='dark'] .markdown img[src*='capturas'] {
+  border-color: #3a2826;
+}
+
+/* ---------- Tablas ---------- */
+.markdown table {
+  display: table;
+  width: 100%;
+  font-size: 0.94rem;
+}
+.markdown table thead tr {
+  background: var(--situr-papel);
+}
+[data-theme='dark'] .markdown table thead tr {
+  background: #241716;
+}
+
+/* ---------- Avisos ---------- */
+.alert--info {
+  --ifm-alert-border-color: #2f6f9f;
+}
+.alert--danger {
+  --ifm-alert-border-color: var(--situr-vivo);
+}
+
+/* ---------- Pie ---------- */
+.footer--dark {
+  --ifm-footer-background-color: var(--situr-vino);
+  --ifm-footer-link-color: rgba(255, 255, 255, 0.85);
+  --ifm-footer-link-hover-color: #fff;
+  --ifm-footer-title-color: #fff;
+  --ifm-footer-color: rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 3px 0 var(--situr-vivo);
+}
+[data-theme='dark'] .footer--dark {
+  --ifm-footer-background-color: #120707;
+}
+
+/* Buscador sobre la barra roja */
+.navbar--primary .navbar__search-input {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--situr-tinta);
+}
+
+/* Los nombres de token y los códigos no se parten en las tablas */
+.markdown table code {
+  white-space: nowrap;
+}
