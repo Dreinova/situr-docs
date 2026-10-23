@@ -1,5 +1,6 @@
 import type {ReactNode} from 'react';
 import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 
@@ -59,7 +60,7 @@ export default function Inicio(): ReactNode {
       <header className={styles.hero}>
         <Curvas />
         <div className={`container ${styles.heroInterior}`}>
-          <img src="/img/visita-tenjo-blanco.png" alt="Visita Tenjo" className={styles.logo} width={161} height={92} />
+          <img src={useBaseUrl('/img/visita-tenjo-blanco.png')} alt="Visita Tenjo" className={styles.logo} width={161} height={92} />
           <Heading as="h1" className={styles.titulo}>
             Cada finca, café y sendero de Tenjo, en un solo lugar.
           </Heading>

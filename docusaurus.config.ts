@@ -4,6 +4,11 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // Se ejecuta en Node.js: aquí no va código de navegador.
 
+// Publicado en GitHub Pages: https://dreinova.github.io/situr-docs/
+// Con un dominio propio (p. ej. docs.situr.visitatenjo.com) basta con DOCS_URL=https://… y DOCS_BASE_URL=/
+const url = process.env.DOCS_URL ?? 'https://dreinova.github.io';
+const baseUrl = process.env.DOCS_BASE_URL ?? '/situr-docs/';
+
 const config: Config = {
   title: 'SITUR Tenjo',
   tagline: 'Documentación del Sistema de Información Turística de Tenjo',
@@ -13,9 +18,11 @@ const config: Config = {
     v4: true,
   },
 
-  // Cambiar por el dominio definitivo de la documentación
-  url: 'https://docs.situr.visitatenjo.com',
-  baseUrl: '/',
+  url,
+  baseUrl,
+  organizationName: 'Dreinova',
+  projectName: 'situr-docs',
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
 
@@ -27,7 +34,7 @@ const config: Config = {
   headTags: [
     {tagName: 'link', attributes: {rel: 'preconnect', href: 'https://fonts.googleapis.com'}},
     {tagName: 'link', attributes: {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous'}},
-    {tagName: 'link', attributes: {rel: 'apple-touch-icon', href: '/img/apple-touch-icon.png'}},
+    {tagName: 'link', attributes: {rel: 'apple-touch-icon', href: `${baseUrl}img/apple-touch-icon.png`}},
   ],
   stylesheets: [
     'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&display=swap',
