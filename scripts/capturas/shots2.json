@@ -1,0 +1,18 @@
+[
+ {"name":"formulario-titular","path":"/inscripcion/situr"},
+ {"name":"formulario-actualizar","path":"/inscripcion/situr?token=<TOKEN>"},
+ {"name":"formulario-establecimientos","path":"/inscripcion/situr?token=<TOKEN>","steps":[{"next":true,"wait":800}]},
+ {"name":"formulario-confirmar","path":"/inscripcion/situr?token=<TOKEN>","steps":[{"next":true,"wait":600},{"next":true,"wait":600},{"next":true,"wait":600}]},
+ {"name":"encuesta-publica","path":"/encuesta/A4mYxcKDCs2v"},
+ {"name":"crm-config-campos","path":"/settings/fields","steps":[{"inMain":["button","Establecimientos ("]}]},
+ {"name":"crm-config-permisos","path":"/settings/permissions"},
+ {"name":"crm-config-equipo","path":"/settings/team"},
+ {"name":"crm-config-categorias","path":"/settings/categories"},
+ {"name":"crm-encuesta-preguntas","path":"/surveys/3171219c-fe0c-44ea-a98a-4b71781ff9b6"},
+ {"name":"crm-encuesta-respuestas","path":"/surveys/3171219c-fe0c-44ea-a98a-4b71781ff9b6","steps":[{"click":"Respuestas (4)"}]},
+ {"name":"crm-encuesta-destinatarios","path":"/surveys/3171219c-fe0c-44ea-a98a-4b71781ff9b6","steps":[{"click":"Destinatarios (5)"}]},
+ {"name":"crm-empresa","path":"/companies/39e78ca9-1190-4b00-be8c-fe71c9a2e079"},
+ {"name":"crm-rechazado","path":"/establishments/701c203f-d25f-4053-8db5-6c5c85367433"},
+ {"name":"crm-revision-pendiente","path":"/establishments/1e35124b-8cbc-4a93-9997-387d25cb5dab"},
+ {"name":"crm-rechazar","path":"/establishments/1e35124b-8cbc-4a93-9997-387d25cb5dab","steps":[{"role":["button","Rechazar"]},{"wait":500}]}
+]

@@ -32,6 +32,8 @@ capacitación… Una tarea puede tener **varios responsables**, y cada uno marca
 
 ## La lista
 
+![Tareas del equipo con vencimiento, responsables y registro asociado](/img/capturas/crm-tareas.png)
+
 - **Mis tareas** / **Todas**.
 - Búsqueda por título y filtros de **estado** (por defecto «Por hacer»), **tipo**, **responsable** y **vencimiento**
   (vencidas, hoy, próximas, sin fecha).

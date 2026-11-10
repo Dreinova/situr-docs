@@ -10,11 +10,13 @@ que funcionan igual en establecimientos, empresas, contactos y reportes.
 
 ## Entrar
 
-Las cuentas son **solo por invitación**: un administrador te invita desde **Configuración → Equipo**.
+El CRM está en **[crm.tenjoculturayturismo.gov.co](https://crm.tenjoculturayturismo.gov.co)**. Las cuentas son **solo por invitación**: un administrador te invita desde **Configuración → Equipo**.
 
 1. Abre el correo de invitación y sigue el enlace.
 2. Confirma tu nombre y crea una contraseña de **mínimo 8 caracteres**.
 3. Entras con el rol que te asignaron. Mira [Usuarios y roles](/administracion/usuarios-y-roles).
+
+![Inicio de sesión del CRM](/img/capturas/login.png)
 
 ¿Olvidaste la contraseña? En el inicio de sesión toca **¿Olvidaste tu contraseña?** y sigue el enlace que llega a tu
 correo. La sesión dura hasta 30 días en el mismo dispositivo.
@@ -38,7 +40,12 @@ Safari → Compartir → **Agregar a inicio**. Útil para registrar visitas en c
 La **búsqueda** de la barra superior encuentra cualquier registro por su nombre, correo o teléfono. La
 **campana** muestra cuando alguien te menciona con **@** en una nota.
 
+El menú también muestra **Negocios**, **Cotizaciones**, **Facturas** e **Informes**, que vienen del CRM sobre el que
+funciona el SITUR; el IMCTT no los necesita para el trabajo con prestadores.
+
 ## Trabajar con listas
+
+![Lista de establecimientos con búsqueda, filtros por categoría y estado, y responsable](/img/capturas/crm-establecimientos.png)
 
 - **Todos / Mis**: todos los registros que tus permisos te dejan ver, o solo aquellos de los que eres responsable.
 - **Buscar**: sin importar tildes ni mayúsculas, también en los campos personalizados (desde 3 caracteres).

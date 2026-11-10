@@ -33,6 +33,8 @@ El formulario se abre con tu inscripción guardada, en los mismos pasos de la [i
 
 Toca **Guardar cambios** al final.
 
+![Actualizar la inscripción con el enlace del correo](/img/capturas/formulario-actualizar.png)
+
 No se pueden **eliminar establecimientos** ni **cambiar el correo** desde el formulario. Para eso, escríbele al
 Instituto.
 
@@ -44,6 +46,10 @@ Instituto.
 | **Aprobado** | La información fue revisada y aprobada. | Mantenerla al día y reportar tus cifras. |
 | **Rechazado** | Hay algo por corregir. El **motivo** aparece en el formulario y llegó por correo. | Corregir lo indicado y guardar: el establecimiento **vuelve solo a revisión**. |
 | **Inactivo** | El Instituto lo marcó como fuera de operación. | Si volviste a operar, escríbele al Instituto. |
+
+Un establecimiento rechazado aparece marcado **Necesita ajustes**, con el recuadro **Qué debes corregir**:
+
+![Establecimiento rechazado con el motivo, en el formulario](/img/capturas/formulario-establecimientos.png)
 
 :::info[¿Venías del SITUR anterior?]
 Tus datos ya están en el nuevo sistema, con su estado. Pide el enlace con el correo que registraste. Si tu registro

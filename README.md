@@ -17,6 +17,22 @@ npm run serve      # sirve build/ localmente
 
 ## Capturas
 
-Las capturas de la aplicación anterior (`crm-tenjo`) se retiraron en noviembre de 2026, al pasar el SITUR al CRM.
-Las nuevas se toman del CRM con la marca `imctt` y datos de demostración, y se agregan a las guías con
-`![Descripción](/img/capturas/<nombre>.png)`.
+Se tomaron el 9/11/2026 del CRM (marca `imctt`, 1440×900) con una **cuenta de demostración** en una base local de
+Supabase: «IMCTT (demostración)», con prestadores, correos (dominios `.example`) y respuestas ficticios. Nunca con la
+cuenta real del IMCTT.
+
+Los scripts están en `scripts/capturas/` (se corren desde la raíz del repositorio `imctt-crm`, con Node 22.18+):
+
+| Script | Qué hace |
+|---|---|
+| `01-account.mjs` | Crea la cuenta demo y su superadministrador (`admin@demo-tenjo.test`). Luego se carga el catálogo con `scripts/imctt/seed-situr.mjs --nit 9001112223`. |
+| `02-intake.mts` | Inscribe 8 prestadores ficticios por `public_form_intake`, con las mismas reglas del formulario. |
+| `03-enrich.mts` | Equipo, estados de revisión, seguimiento, tareas y una encuesta con respuestas. |
+| `cleanup.sql` | Borra los registros de la cuenta demo (no el catálogo ni los usuarios). |
+| `shoot.mjs` | Inicia sesión y toma las capturas listadas en `shots.json` / `shots2.json` (Playwright). |
+
+`lib.mjs` lee `local.env` (salida de `supabase status -o env`), que no se guarda en el repositorio. Los ids de los
+JSON son los de la base local donde se tomaron.
+
+> **Ojo:** la Edge Function `situr` busca un único formulario `situr` activo. Para capturar el formulario de la demo
+> hay que desactivar temporalmente el de la otra cuenta y luego restaurarlo.

@@ -18,19 +18,23 @@ Mirador · Octubre 2026». Hay uno por establecimiento, frecuencia y periodo.
 ## De dónde salen
 
 - **Del formulario**: cuando el prestador guarda sus indicadores, quedan en el reporte del **último periodo cerrado**
-  de cada frecuencia, como **Enviado**.
+  de cada frecuencia, en estado **Borrador**. El equipo revisa las cifras y lo marca con **Enviar reporte**.
 - **Del CRM**: el equipo puede crear un reporte en nombre del prestador (por ejemplo, tras una llamada) desde
   **Reportes → Agregar reporte** o desde la caja **Reportes** de la ficha del establecimiento.
-- **Del SITUR anterior**: los reportes históricos se migraron con su periodo.
+- **Del SITUR anterior**: los reportes históricos se migraron con su periodo, como **Enviados**.
 
 ## La lista
 
 **Reportes** muestra el nombre, periodo, frecuencia, estado (**Borrador** o **Enviado**), responsable y fecha de
 creación. Se busca por establecimiento, periodo o indicador, y se filtra por estado.
 
+![Lista de reportes estadísticos con su periodo, frecuencia y estado](/img/capturas/crm-reportes.png)
+
 ## Un reporte
 
 La ficha muestra los indicadores que aplican a la **categoría** del establecimiento y a la **frecuencia** del reporte.
+
+![Reporte mensual en borrador con sus indicadores](/img/capturas/crm-reporte.png)
 
 - **Enviar reporte**: lo marca como enviado; la base guarda quién y cuándo.
 - **Corregir (volver a borrador)**: para cambiar una cifra. Después vuelve a enviarlo.

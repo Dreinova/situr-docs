@@ -22,6 +22,8 @@ sin publicar nada.
 **Configuración → Categorías** lista las categorías de establecimientos (las del RNT más categorías locales como
 Artesanías) y, debajo de cada una, sus subcategorías. Se agregan y se renombran desde ahí.
 
+![Configuración → Categorías](/img/capturas/crm-config-categorias.png)
+
 ## Campos
 
 Cada campo tiene una **etiqueta** (la pregunta), una **clave** y un **tipo**:
@@ -47,6 +49,8 @@ CRM o de una importación.
 Los campos se organizan en **grupos**, que son las cajas de la ficha y las secciones del formulario. En
 establecimientos y reportes, un grupo puede **limitarse a categorías** («Aplica a estas categorías»; ninguna marcada =
 todas). Así, un restaurante ve las preguntas de restaurantes y un hotel las de alojamiento.
+
+![Configuración → Campos → Establecimientos: grupos y la categoría a la que aplica cada uno](/img/capturas/crm-config-campos.png)
 
 En reportes, el grupo también tiene una **frecuencia de los indicadores** (mensual, trimestral, semestral o anual):
 sus indicadores se piden en los reportes de esa frecuencia.

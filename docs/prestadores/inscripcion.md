@@ -9,8 +9,8 @@ La inscripción toma unos **10 minutos** y **no necesitas crear una cuenta ni un
 de documento (cédula o NIT), la dirección de cada establecimiento, el número de **RNT** si lo tienes, y las fotos y
 documentos que quieras adjuntar.
 
-Entra al formulario de inscripción desde el enlace que comparte el Instituto Municipal de Cultura y Turismo (la
-dirección termina en `/inscripcion/situr`).
+Entra al formulario de inscripción:
+**[crm.tenjoculturayturismo.gov.co/inscripcion/situr](https://crm.tenjoculturayturismo.gov.co/inscripcion/situr)**.
 
 :::tip[Puedes hacerlo por partes]
 Lo que vas escribiendo queda guardado en tu navegador. Si cierras la página, al volver desde el mismo equipo lo
@@ -18,6 +18,8 @@ encuentras donde lo dejaste. Las fotos y documentos no se guardan en ese borrado
 :::
 
 ## Paso 1 · Titular
+
+![Primer paso del formulario: datos del titular](/img/capturas/formulario-titular.png)
 
 Indica si el negocio está a nombre de una **persona natural** (con cédula) o de una **persona jurídica** (con NIT).
 Para personas jurídicas se piden además el dígito de verificación, el tipo de sociedad, la matrícula mercantil, la
@@ -56,6 +58,8 @@ Datos del negocio que ayudan a medir el empleo y los ingresos que genera el turi
 estas cifras.
 
 ## Paso 4 · Confirmar
+
+![Último paso: resumen y autorización de datos](/img/capturas/formulario-confirmar.png)
 
 Revisa el resumen (cada línea tiene un botón para volver a editarla), marca **Autorizo el tratamiento de mis datos
 personales** (Ley 1581 de 2012) y toca **Enviar inscripción**.

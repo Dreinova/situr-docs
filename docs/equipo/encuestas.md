@@ -14,6 +14,8 @@ y, cuando se sabe quién respondió, quedan **asociadas** a su establecimiento, 
 **Encuestas** agrupa en pestañas las **Abiertas**, **Programadas**, **Borradores** y **Cerradas**, con su periodo y
 número de respuestas. **Crear encuesta** abre una nueva en borrador.
 
+![Lista de encuestas por estado](/img/capturas/crm-encuestas.png)
+
 ## Preparar una encuesta
 
 La ficha de la encuesta tiene cinco pestañas:
@@ -25,6 +27,8 @@ La ficha de la encuesta tiene cinco pestañas:
 | **Destinatarios** | A quién se envía, con un enlace personal para cada uno. |
 | **Configuración** | Nombre, descripción, fechas, datos de quien responde, mensaje final y responsable. |
 | **Historial** | Quién creó o cambió la encuesta y cuándo. |
+
+![Pestaña Preguntas de una encuesta publicada](/img/capturas/crm-encuesta-preguntas.png)
 
 ### Tipos de pregunta
 
@@ -50,7 +54,9 @@ Si la encuesta ya tiene respuestas, el editor lo advierte antes de guardar.
 **Publicar** exige al menos una pregunta guardada y las fechas de apertura y cierre. Al publicar:
 
 - si la apertura es futura, queda **Programada**; si no, **Abierta**,
-- se activa el **enlace público** (la dirección termina en `/encuesta/<nombre>`), que puedes copiar y compartir.
+- se activa el **enlace público** (`https://crm.tenjoculturayturismo.gov.co/encuesta/<nombre>`), que puedes copiar y compartir.
+
+![Así ve la encuesta quien responde](/img/capturas/encuesta-publica.png)
 
 Las preguntas se pueden seguir editando después de publicar. **Cerrar ahora** deja de recibir respuestas; **Reabrir**
 y **Volver a borrador** deshacen el cierre o la publicación.
@@ -68,10 +74,14 @@ sea anónima.
 
 Sin destinatarios, la encuesta se responde solo con el enlace general.
 
+![Destinatarios con su enlace personal y quién ya respondió](/img/capturas/crm-encuesta-destinatarios.png)
+
 ## Resultados
 
 En **Respuestas**: barras por opción, promedios en números y escalas, y cada respuesta individual. Desde ahí se puede
 cambiar el registro asociado a una respuesta, eliminarla o **exportar CSV** (requiere el permiso «Exportar datos»).
+
+![Resumen de respuestas por pregunta](/img/capturas/crm-encuesta-respuestas.png)
 
 Cada respuesta asociada deja una nota en la cronología del registro, y las fichas de establecimientos, empresas y
 contactos tienen la caja **Encuestas** con lo que han respondido.

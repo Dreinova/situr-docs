@@ -24,7 +24,7 @@ IMCTT**.
 3. **Edge Function del formulario**:
    ```bash
    supabase secrets set --project-ref <ref> \
-     "SITUR_EDIT_URL=https://<dominio del CRM>/inscripcion/situr" \
+     "SITUR_EDIT_URL=https://crm.tenjoculturayturismo.gov.co/inscripcion/situr" \
      SMTP_SERVER=… SMTP_PORT=… SMTP_USER=… SMTP_PASSWORD=… SMTP_FROM=…
    supabase functions deploy situr
    ```
@@ -48,7 +48,7 @@ En el repositorio (Settings → Secrets and variables → Actions):
 | `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_SERVER_DIR` | Secret | Cuenta FTP limitada a la carpeta del subdominio (`FTP_SERVER_DIR = ./`). |
 | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Secret | Los del proyecto del IMCTT (la clave pública, **nunca** la de servicio). |
 | `BRAND` | Variable | `imctt` |
-| `DEPLOY_URL` | Variable | `https://<dominio del CRM>` |
+| `DEPLOY_URL` | Variable | `https://crm.tenjoculturayturismo.gov.co` |
 
 `public/.htaccess` fuerza HTTPS y manda todas las rutas de la SPA (incluidas `/inscripcion/situr` y `/encuesta/…`) a
 `index.html`.
@@ -71,8 +71,7 @@ Para cambiar de dominio:
 1. Poner el SITUR anterior en solo lectura (o en mantenimiento).
 2. Exportar la base y `uploads/` y ejecutar la [migración](/tecnico/migracion) (se puede repetir).
 3. Redirigir la dirección anterior del formulario a la nueva, por ejemplo `registro.visitatenjo.com` →
-   `https://<dominio del CRM>/inscripcion/situr`.
+   `https://crm.tenjoculturayturismo.gov.co/inscripcion/situr`.
 4. Avisar a los prestadores: **ya no hay contraseña**; entran con «Actualizar mi inscripción» y su correo.
-5. **No apagar `api-situr`** mientras visitatenjo.com lea de ella: la [API para el sitio](/tecnico/visitatenjo) está
-   pendiente.
+5. **No apagar `api-situr`** mientras visitatenjo.com lea de ella: la [API para el sitio](/tecnico/visitatenjo) aún no está publicada (ver su puesta en marcha).
 6. Probar el envío real de correos (inscripción, enlace y revisión) con el SMTP del cliente.

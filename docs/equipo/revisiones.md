@@ -27,10 +27,18 @@ datos. Los demás ven el estado y el motivo de un rechazo, pero no pueden cambia
 
 En la ficha del establecimiento, bajo el nombre, está la tarjeta **Revisión pendiente** (o **Estado**):
 
+![Ficha de un establecimiento pendiente, con la tarjeta de revisión](/img/capturas/crm-revision-pendiente.png)
+
 - **Aprobar**: el establecimiento pasa a **Aprobado**.
 - **Rechazar**: pide el **motivo**, que verá el prestador en el correo y en el formulario. Sé específico: qué falta y
   cómo corregirlo.
 - **Inactivar**: para un establecimiento aprobado que dejó de operar. Se puede volver a aprobar.
+
+![Ventana para rechazar con el motivo](/img/capturas/crm-rechazar.png)
+
+En un establecimiento rechazado, todo el equipo ve el motivo en la tarjeta **Estado**:
+
+![Establecimiento rechazado con su motivo](/img/capturas/crm-rechazado.png)
 
 La casilla **Avisar al prestador por correo** viene marcada. Al aprobar o rechazar, el CRM envía a cada contacto del
 establecimiento el resultado (y el motivo, si es un rechazo) junto con su **enlace de 7 días** para actualizar la

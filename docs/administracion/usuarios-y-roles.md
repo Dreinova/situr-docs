@@ -40,6 +40,8 @@ reportes, encuestas…):
 «Propios» son los registros de los que la persona es **responsable**. Además están los permisos generales
 **Gestionar equipo** y **Exportar datos** (necesario, por ejemplo, para exportar las respuestas de una encuesta).
 
+![Configuración → Permisos: matriz por rol](/img/capturas/crm-config-permisos.png)
+
 Valores iniciales para los módulos del SITUR:
 
 | | Administrador | Gerente | Ventas |
@@ -53,7 +55,9 @@ accesos **personalizados**, distintos a los de su rol.
 
 ## Invitar a alguien
 
-1. **Configuración → Equipo → Invitar nuevo miembro**.
+![Configuración → Equipo](/img/capturas/crm-config-equipo.png)
+
+1. **Configuración → Equipo → Invitar usuario**.
 2. Correo, nombre, apellidos y rol (Administrador, Gerente o Ventas).
 3. La persona recibe un correo para completar su perfil y crear su contraseña. Mientras no lo haga, aparece como
    **pendiente**.

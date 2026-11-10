@@ -17,6 +17,8 @@ categoría y los datos que tengas. Luego asócialo a su empresa y a su contacto 
 
 ## La ficha
 
+![Ficha de un establecimiento aprobado: datos, cronología y asociaciones](/img/capturas/crm-establecimiento.png)
+
 | Parte | Qué tiene |
 |---|---|
 | **Encabezado** | Nombre, categoría › tipo, estado y **Editar establecimiento**. |
@@ -26,6 +28,8 @@ categoría y los datos que tengas. Luego asócialo a su empresa y a su contacto 
 | **Actividad** | Notas, llamadas, visitas (reuniones), WhatsApp, correos de revisión y tareas. |
 | **Historial** | Cada cambio de un campo, con el valor anterior. |
 | **Derecha** | Contactos y empresas asociados, tareas, reportes, encuestas y archivos adjuntos (fotos y documentos). |
+
+![Pestaña Historial: cada cambio con su valor anterior](/img/capturas/crm-historial.png)
 
 :::note[Cambiar de categoría]
 Al cambiar la categoría cambian también los grupos de preguntas que se muestran y los indicadores que se le piden.

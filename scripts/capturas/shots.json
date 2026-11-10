@@ -1,0 +1,20 @@
+[
+ {"name":"crm-establecimientos","path":"/establishments"},
+ {"name":"crm-revision-pendiente","path":"/establishments/1e35124b-8cbc-4a93-9997-387d25cb5dab"},
+ {"name":"crm-rechazar","path":"/establishments/1e35124b-8cbc-4a93-9997-387d25cb5dab","steps":[{"role":["button","Rechazar"]},{"wait":500}]},
+ {"name":"crm-rechazado","path":"/establishments/701c203f-d25f-4053-8db5-6c5c85367433"},
+ {"name":"crm-establecimiento","path":"/establishments/c85252f9-b285-4c9f-9a76-3e3ffd039dc3"},
+ {"name":"crm-historial","path":"/establishments/c85252f9-b285-4c9f-9a76-3e3ffd039dc3","steps":[{"role":["tab","Historial"]}]},
+ {"name":"crm-empresa","path":"/companies/39e78ca9-1190-4b00-be8c-fe71c9a2e079"},
+ {"name":"crm-reportes","path":"/statistical-reports"},
+ {"name":"crm-reporte","path":"/statistical-reports/27df9b11-6bfb-4923-8b48-a78b1a3cc010"},
+ {"name":"crm-encuestas","path":"/surveys"},
+ {"name":"crm-encuesta-preguntas","path":"/surveys/3171219c-fe0c-44ea-a98a-4b71781ff9b6"},
+ {"name":"crm-encuesta-respuestas","path":"/surveys/3171219c-fe0c-44ea-a98a-4b71781ff9b6","steps":[{"click":"Respuestas (4)"}]},
+ {"name":"crm-encuesta-destinatarios","path":"/surveys/3171219c-fe0c-44ea-a98a-4b71781ff9b6","steps":[{"click":"Destinatarios (5)"}]},
+ {"name":"crm-tareas","path":"/tasks","steps":[{"click":"Todas"}]},
+ {"name":"crm-config-categorias","path":"/settings/categories"},
+ {"name":"crm-config-campos","path":"/settings/fields","steps":[{"click":"Establecimientos"}]},
+ {"name":"crm-config-permisos","path":"/settings/permissions"},
+ {"name":"crm-config-equipo","path":"/settings/team"}
+]

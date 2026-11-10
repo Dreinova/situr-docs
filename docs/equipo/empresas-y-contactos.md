@@ -14,6 +14,8 @@ agrega un establecimiento, no se duplica.
 Su ficha reúne los datos del titular (tipo de persona, documento, representante legal, empleo y finanzas…) y, a la
 derecha, sus **establecimientos** y **contactos** asociados.
 
+![Ficha de una empresa con sus datos de inscripción, establecimientos y contactos](/img/capturas/crm-empresa.png)
+
 ## Contactos: las personas
 
 Un **contacto** es la persona con la que habla el IMCTT. El de la inscripción es quien recibe los avisos de revisión y
