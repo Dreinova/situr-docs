@@ -101,7 +101,7 @@ const config: Config = {
           title: 'Guías',
           items: [
             {label: 'Prestadores', to: '/prestadores/inscripcion'},
-            {label: 'Equipo de la Secretaría', to: '/equipo/inicio-y-revisiones'},
+            {label: 'Equipo del IMCTT', to: '/equipo/primeros-pasos'},
             {label: 'Administración', to: '/administracion/configuracion'},
           ],
         },
@@ -109,7 +109,7 @@ const config: Config = {
           title: 'Técnico',
           items: [
             {label: 'Instalación local', to: '/tecnico/instalacion'},
-            {label: 'API pública', to: '/tecnico/api-publica'},
+            {label: 'Formulario público', to: '/tecnico/formulario-publico'},
             {label: 'Migración desde SITUR', to: '/tecnico/migracion'},
           ],
         },
@@ -121,7 +121,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Secretaría de Desarrollo Económico y Turismo · Alcaldía de Tenjo · ${new Date().getFullYear()}`,
+      copyright: `Instituto Municipal de Cultura y Turismo de Tenjo · ${new Date().getFullYear()}`,
     },
     prism: {
       theme: prismThemes.github,

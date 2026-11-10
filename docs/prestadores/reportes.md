@@ -1,16 +1,21 @@
 ---
-title: Enviar mis reportes
+title: Mis reportes
 sidebar_position: 3
 ---
 
-# Enviar mis reportes
+# Mis reportes
 
-Cuando tu establecimiento está **aprobado**, la Secretaría te pide unas cifras cada cierto tiempo: visitantes,
-ocupación, tarifas, comensales… Las preguntas dependen de tu **categoría**.
+El Instituto te pide unas cifras de cada establecimiento cada cierto tiempo: visitantes, ocupación, tarifas,
+comensales… Son los **indicadores**, y dependen de la **categoría** del establecimiento.
+
+## ¿Dónde se reportan?
+
+En el mismo formulario: cada establecimiento tiene su sección de **indicadores**, agrupados por frecuencia. Los
+llenas al [inscribirte](/prestadores/inscripcion) y después con tu [enlace](/prestadores/actualizar).
 
 ## ¿Qué periodo reporto?
 
-Siempre el **último periodo cerrado**:
+Siempre el **último periodo cerrado** de cada frecuencia:
 
 | Frecuencia | Si hoy es 15 de octubre de 2026, reportas… |
 |---|---|
@@ -19,20 +24,13 @@ Siempre el **último periodo cerrado**:
 | Semestral | 1.er semestre 2026 (enero a junio) |
 | Anual | año 2025 |
 
-Los periodos pendientes aparecen en tu inicio, en **Reportes por enviar**.
-
-## Cómo enviar
-
-1. Entra al establecimiento y abre la pestaña **Reportes**.
-2. Toca **Reportar** en el periodo pendiente.
-3. Llena las cifras. Los campos con asterisco son obligatorios.
-4. Toca **Enviar reporte**.
-
-![Formulario de reporte](/img/capturas/portal-reportes.png)
+Al guardar, las cifras quedan en el reporte de ese periodo. Si vuelves a guardar dentro del mismo periodo, se
+**actualiza** el mismo reporte; no se duplica.
 
 :::tip[¿Te equivocaste?]
-Toca **Corregir** en un reporte ya enviado, cambia el valor y vuelve a enviar. Se reemplaza el anterior; no se duplica.
+Abre tu enlace, corrige la cifra y guarda de nuevo. Si el periodo ya cambió, escríbele al Instituto para que corrija
+el reporte anterior desde el CRM.
 :::
 
-El sistema revisa que las cifras tengan sentido: no acepta números negativos, porcentajes mayores a 100 ni periodos
-futuros.
+El formulario revisa que cada respuesta tenga el tipo correcto (por ejemplo, que un número sea un número) antes de
+guardar.

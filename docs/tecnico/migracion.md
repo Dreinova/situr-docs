@@ -5,61 +5,88 @@ sidebar_position: 5
 
 # Migración desde el SITUR anterior
 
-El comando `situr:importar` lleva al CRM los datos del SITUR anterior (`situr/` + `api-situr/`). Se probó con el
-**dump real de producción** del 22/10/2026 y el respaldo de `/uploads` (707 MB).
+`scripts/imctt/import-situr-history.mjs` lee el volcado MySQL del SITUR anterior (`situr_db_tenjo.sql`) y genera un
+SQL que pasa cada registro por **la misma traducción del formulario público** (`toIntake` → `public_form_intake`). Así,
+lo histórico queda igual que una inscripción nueva.
+
+:::note[Sustituye al importador de crm-tenjo]
+El comando `php artisan situr:importar` de `crm-tenjo` ya no se usa. El nuevo importador no crea cuentas de prestador:
+en el CRM no existen.
+:::
 
 ## Pasos
 
-1. **Exportar** desde el cPanel la base `situr_db_tenjo` (phpMyAdmin → Exportar) y la carpeta `uploads/` de
-   `api-situr` como `uploads.zip`.
-2. **Cargar** el dump en el MySQL de Docker:
-   ```powershell
-   cmd /c "docker compose exec -T mysql mysql -uroot -proot_local situr_db_tenjo < ..\situr_db_tenjo.sql"
-   ```
-3. **Descomprimir** `uploads.zip` en `backend/storage/app/situr/` (queda `storage/app/situr/uploads/…`).
-4. **Simular** y revisar los avisos:
-   ```powershell
-   docker compose exec api php artisan situr:importar --simular --uploads=storage/app/situr/uploads --excluir="test@test.com,proyectos@oblicua.co"
-   ```
-5. **Importar**: el mismo comando sin `--simular`. Es **idempotente** (usa `legacy_id`), así que el día del cambio se
-   puede repetir para traer lo que se haya inscrito entretanto.
+```bash
+# 1. Generar el SQL. «uploads» es la carpeta del zip del hosting del SITUR (fotos y documentos).
+SUPABASE_URL=https://<proyecto>.supabase.co SUPABASE_SERVICE_ROLE_KEY=<clave> \
+node scripts/imctt/import-situr-history.mjs --dump situr_db_tenjo.sql \
+  --exclude test@test.com,proyectos@oblicua.co --uploads uploads > historico.sql
 
-| Opción | Uso |
-|---|---|
-| `--simular` | Ejecuta todo en una transacción y la revierte. |
-| `--uploads=` | Carpeta con el respaldo de `/uploads`. |
-| `--descargar-imagenes` | Si un archivo no está en `--uploads`, lo descarga del servidor de SITUR. |
-| `--excluir=` | Correos (separados por coma) cuyas cuentas y registros no se importan. |
+# 2. Cargar los datos (una sola transacción: si algo falla, no queda nada a medias).
+supabase db query --linked --file historico.sql      # o: psql <conexión> -f historico.sql
+```
 
-## Resultado con los datos de producción
+- Con `--uploads`, el script **sube primero los archivos** al bucket `record-attachments`, en
+  `<cuenta>/establishment/situr-<id del SITUR>/`. Volver a subir reemplaza el mismo archivo. Sin `--uploads`, el SQL no
+  incluye adjuntos.
+- `--exclude` recibe los correos de las cuentas de prueba del SITUR; sus registros no se importan.
+- El resumen y los avisos salen por la consola sin interrumpir la importación: establecimientos sin categoría (quedan
+  en «Otros»), archivos que el SITUR nunca guardó o que no vienen en el zip, y casos parecidos.
 
-| | |
-|---|---|
-| Usuarios (con su misma contraseña) | 70 |
-| Prestadores (2 duplicados fusionados) | 75 |
-| Establecimientos | 77 |
-| Fotos | 358 |
-| Reportes | 61 |
-| Indicadores y campos creados desde el formulario | 47 y 28 |
+:::tip[Repetirlo es seguro]
+Cada establecimiento guarda su id del SITUR en el campo «ID en el SITUR anterior» (`external_key = situr_id`) y no se
+importa dos veces. El día del cambio se puede volver a correr para traer lo que se haya inscrito entretanto.
+:::
 
-## Qué corrige el importador
+## Qué conserva
+
+- El **estado de revisión**: aprobado, pendiente o rechazado. Si el SITUR no guardó el motivo del rechazo, queda «sin
+  motivo registrado».
+- Las **fechas originales** del establecimiento, el contacto y la empresa. La cronología y el historial empiezan en esa
+  fecha, con la nota «Inscripción importada del SITUR anterior».
+- Las **fotos** (tabla `imagenes_establecimientos` y la copia en el JSON, sin repetir) y los **documentos** por campo.
+- Los **indicadores**: los del formulario van al periodo cerrado anterior a la fecha en que se respondieron, y los de
+  `reportes_establecimientos` al periodo de su fecha. Todos quedan como reportes **enviados**.
+- Los **tipos de turismo** (`establecimiento_tags`), sumados a la pregunta de categorías complementarias.
+
+## Qué corrige
 
 ```mermaid
 flowchart TD
-    A[situr_registros.datos JSON] -->|tipo de persona del JSON,<br/>cédula o NIT, fusión de duplicados| B[actores + contactos + caracterizaciones]
-    C[establecimientos.datos JSON] -->|categorías múltiples, veredas a mano,<br/>coordenadas en grados o invertidas,<br/>HTML del editor, URLs sucias| D[establecimientos]
-    E[situr_form_config<br/>41 versiones] -->|numéricas con frecuencia → indicadores<br/>el resto → campos por categoría| F[indicadores + campos_personalizados]
-    C -->|respuestas re-envueltas desenvueltas| G[datos_extra + reportes]
-    H[establecimiento_tags] --> I[tipos de turismo]
-    J[imagenes_establecimientos + fotos del JSON] -->|sin duplicar, desde el respaldo| K[establecimiento_imagenes]
+    A[situr_registros.datos JSON] -->|preguntas por etiqueta o por id,<br/>respuestas envueltas en value/label| T[toIntake]
+    C[establecimientos.datos JSON] -->|categorías en lista: la primera es la principal,<br/>veredas escritas a mano| T
+    H[establecimiento_tags] -->|tipos de turismo| T
+    R[reportes_establecimientos] -->|periodo según su fecha| T
+    T --> I[public_form_intake]
+    I --> E[empresa + contacto + establecimientos<br/>+ valores + reportes + adjuntos]
 ```
 
-- **Contraseñas**: se conservan los hash bcrypt. La clave `password` que SITUR guardaba **en texto plano** dentro del
-  JSON de registros **nunca se lee**.
-- **Coordenadas**: acepta `4°52′11″N`, `4.8875 Norte`, longitudes sin signo e invertidas; descarta las imposibles
-  con una nota en el prestador.
-- **Veredas**: reconoce `VRDA POVEDA 2`, `Centro`, `Guanguatá`, `Churuguaco Bajo`…
-- **Categorías y subcategorías** desconocidas se crean (y se avisan); el texto libre se normaliza.
-- **Registros del equipo**: los que hizo la cuenta de la Secretaría quedan sin cuenta de prestador.
-- **Posibles pruebas**: lista los registros con nombres como «Prueba» o «test 1» para decidir si excluirlos.
-- **Imágenes huérfanas** (508 de establecimientos ya borrados) y las que dan 404 se omiten.
+- Preguntas guardadas por **etiqueta** en vez de id.
+- Respuestas envueltas en `{value, label}`.
+- **Categorías** en lista: la primera reconocida es la principal; las demás quedan en la nota.
+- **Veredas** escritas a mano («Centro», «VRDA POVEDA 2»…).
+- Si un registro no tenía correo en el formulario, se usa el de su cuenta del SITUR.
+
+:::danger[Contraseñas]
+Nunca lee la contraseña en texto plano del JSON de registros ni los hashes de `usuarios`, y no envía correos. El
+volcado contiene contraseñas en texto plano: es **confidencial** y no se sube al repositorio ni a ningún servicio.
+:::
+
+## Resultado con el volcado del 22/10/2026 (prueba local)
+
+| | |
+|---|---|
+| Registros importados | 77 (2 excluidos) |
+| Establecimientos | 78: 63 aprobados, 13 pendientes y 2 rechazados |
+| Contactos | 74 (los registros con el mismo correo quedan en un solo contacto) |
+| Indicadores | 173 |
+| Archivos | 370 de 375 |
+
+Todos se abren en el formulario con su enlace. Los prestadores entran con «Actualizar mi inscripción» y el correo que
+registraron.
+
+## Catálogo
+
+Las categorías, campos e indicadores no los crea este script, sino el seed (`scripts/imctt/seed-situr.mjs`), que se
+corre antes. Sale de la configuración real del formulario del SITUR (`situr-form-config.json`): 22 categorías,
+32 subcategorías y 47 indicadores, con `external_key` igual al id de SITUR.

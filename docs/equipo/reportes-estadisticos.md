@@ -1,31 +1,44 @@
 ---
-title: Reportes SITUR
-sidebar_position: 4
+title: Reportes estadísticos
+sidebar_position: 5
 ---
 
-# Reportes SITUR
+# Reportes estadísticos
 
-Esta pantalla responde dos preguntas para cada periodo:
+Un **reporte estadístico** reúne los **indicadores** de un establecimiento para un periodo, por ejemplo «Finca El
+Mirador · Octubre 2026». Hay uno por establecimiento, frecuencia y periodo.
 
-1. **¿Quién falta por reportar?** El porcentaje de cumplimiento y la lista de establecimientos obligados, con un
-   punto verde (reportó) o ámbar (pendiente).
-2. **¿Qué dicen las cifras?** El consolidado por indicador: respuestas, total, promedio y rango.
+| Frecuencia | Periodos |
+|---|---|
+| Mensual | Cada mes. |
+| Trimestral | Enero–marzo, abril–junio, julio–septiembre, octubre–diciembre. |
+| Semestral | Enero–junio y julio–diciembre. |
+| Anual | El año calendario. |
 
-![Reportes SITUR](/img/capturas/crm-reportes.png)
+## De dónde salen
 
-Elige la **frecuencia** (mensual, trimestral, semestral o anual), el **periodo** y, si quieres, una **categoría**.
+- **Del formulario**: cuando el prestador guarda sus indicadores, quedan en el reporte del **último periodo cerrado**
+  de cada frecuencia, como **Enviado**.
+- **Del CRM**: el equipo puede crear un reporte en nombre del prestador (por ejemplo, tras una llamada) desde
+  **Reportes → Agregar reporte** o desde la caja **Reportes** de la ficha del establecimiento.
+- **Del SITUR anterior**: los reportes históricos se migraron con su periodo.
 
-## ¿Quién está obligado a reportar?
+## La lista
 
-Los establecimientos **aprobados** que tengan al menos un indicador de esa frecuencia para su categoría principal o
-sus categorías complementarias.
+**Reportes** muestra el nombre, periodo, frecuencia, estado (**Borrador** o **Enviado**), responsable y fecha de
+creación. Se busca por establecimiento, periodo o indicador, y se filtra por estado.
 
-## Exportar
+## Un reporte
 
-**Exportar CSV** descarga una fila por establecimiento y una columna por indicador del periodo elegido, lista para
-Excel o para cruzar con otras fuentes.
+La ficha muestra los indicadores que aplican a la **categoría** del establecimiento y a la **frecuencia** del reporte.
 
-:::tip[Recordatorios]
-Usa la lista de pendientes para crear [tareas](/equipo/tareas) de seguimiento o registrar llamadas desde la ficha de
-cada prestador.
+- **Enviar reporte**: lo marca como enviado; la base guarda quién y cuándo.
+- **Corregir (volver a borrador)**: para cambiar una cifra. Después vuelve a enviarlo.
+
+Cada cambio de cifra queda en el **Historial** del reporte.
+
+:::info[Pendiente]
+El SITUR anterior tenía una vista de **cumplimiento** (quién falta por reportar en un periodo), el **consolidado** por
+indicador y la exportación a CSV. En el CRM todavía no existen: por ahora, filtra la lista de reportes por periodo y
+estado y busca el periodo («Octubre 2026»).
 :::

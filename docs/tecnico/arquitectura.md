@@ -5,113 +5,122 @@ sidebar_position: 1
 
 # Arquitectura
 
-El código vive en `crm-tenjo/` y tiene dos aplicaciones independientes que se comunican por una API REST.
+Desde noviembre de 2026 el SITUR funciona dentro del **CRM de Oblicua** (repositorio `oblicuaDev/imctt-crm`), con la
+marca del IMCTT y tres **módulos opcionales** activados para la cuenta: establecimientos, reportes estadísticos y
+encuestas. La aplicación anterior (`crm-tenjo/`, Laravel 12 + MySQL) y el SITUR original (`situr/` + `api-situr/`)
+quedan **retirados**.
 
 ```mermaid
 flowchart LR
     subgraph Navegador
-      SPA[Frontend React<br/>frontend/]
+      CRM[CRM React<br/>equipo del IMCTT]
+      FORM[/inscripcion/situr<br/>formulario público/]
+      ENC[/encuesta/:slug<br/>encuestas públicas/]
     end
-    subgraph Servidor
-      API[API Laravel 12<br/>backend/]
-      DB[(MySQL 8<br/>utf8mb4)]
-      FS[[storage/<br/>fotos públicas y documentos privados]]
+    subgraph Supabase
+      DB[(Postgres<br/>RLS por cuenta y rol)]
+      AUTH[Auth<br/>solo el equipo]
+      ST[[Storage<br/>record-attachments, privado]]
+      FN[Edge Function situr]
+      MAIL[Edge Functions<br/>send-email, task-notifications]
     end
-    WP[visitatenjo.com<br/>WordPress]
-    SMTP[(Correo SMTP)]
-    SPA -- "Bearer token<br/>/api/*" --> API
-    WP -- "X-Api-Key<br/>/api/publico/*" --> API
-    API --> DB
-    API --> FS
-    API --> SMTP
+    SMTP[(SMTP)]
+    CRM -- "clave pública + sesión" --> DB
+    CRM --> AUTH
+    CRM --> ST
+    FORM -- "/situr/*" --> FN
+    ENC -- "survey_public / survey_submit (anon)" --> DB
+    FN -- service_role --> DB
+    FN --> ST
+    FN --> SMTP
+    MAIL --> SMTP
 ```
 
-| Parte | Tecnología | Carpeta |
+| Parte | Tecnología | Dónde |
 |---|---|---|
-| API | Laravel 12, PHP 8.2, Sanctum (tokens), MySQL 8 | `backend/` |
-| Frontend | React 19, Vite 6, TypeScript, Tailwind 4, TanStack Query, Leaflet, Recharts | `frontend/` |
-| Entorno local | Docker Compose (MySQL, phpMyAdmin, Mailpit, API) o XAMPP | `docker-compose.yml` |
-| Documentación | Docusaurus 3 | `tenjo-docs/` |
+| Frontend | React 19, TypeScript, Vite 8, React Router 7, Tailwind CSS 4, Recharts | `src/` |
+| Base de datos, autenticación y archivos | Supabase: Postgres, Auth, Storage | `supabase/migrations/` |
+| Lógica de servidor | Supabase Edge Functions (Deno) | `supabase/functions/` |
+| Marca del IMCTT | `brands/imctt/` (se compila con `BRAND=imctt`) | `brands/imctt/` |
+| Hosting del frontend | Archivos estáticos en cPanel, subidos por GitHub Actions | `.github/workflows/deploy.yml` |
+| Documentación | Docusaurus 3 | `tenjo-docs/` (este sitio) |
 
-## Modelo de datos
+No hay servidor propio: el navegador consulta Supabase con la clave pública y **la RLS es la autorización efectiva**.
+Las reglas que siempre deben cumplirse (validaciones, permisos, quién cambia el estado de revisión) viven en Postgres
+como *checks*, *triggers* y políticas.
+
+## Principio: la personalización vive en los datos
+
+El CRM es **multicuenta**. Todo lo específico del IMCTT es **una fila de la base**, no código:
+
+- las categorías y subcategorías (`establishment_categories`),
+- las preguntas de empresas y establecimientos y los indicadores (`custom_fields`, con su `external_key`),
+- los grupos de preguntas por categoría y frecuencia (`custom_field_groups.category_ids`, `frequency`),
+- el formulario público, sus textos y reglas (`public_forms.settings`),
+- los módulos activos (`organizations.modules`: `establishments`, `reports`, `surveys`).
+
+Por eso el formulario público no tiene ids escritos en el código, a diferencia del SITUR anterior: si el IMCTT cambia
+una pregunta en Configuración, el formulario la muestra así sin desplegar nada.
+
+## Modelo de datos (módulos del SITUR)
 
 ```mermaid
 erDiagram
-    users }o--o| actores : "prestador vinculado"
-    actores ||--o{ contactos : tiene
-    actores ||--o{ caracterizaciones : "1 por año"
-    actores ||--o{ establecimientos : tiene
-    actores ||--o{ interacciones : seguimiento
-    actores ||--o{ tareas : pendientes
-    actores }o--o{ etiquetas : marcado
-    categorias ||--o{ subcategorias : agrupa
-    categorias ||--o{ establecimientos : principal
-    establecimientos }o--o{ categorias : complementarias
-    establecimientos }o--o{ tipos_turismo : ofrece
-    veredas ||--o{ establecimientos : ubica
-    establecimientos ||--o{ establecimiento_imagenes : fotos
-    establecimientos ||--o{ reportes : envía
-    reportes ||--o{ reporte_valores : contiene
-    indicadores ||--o{ reporte_valores : mide
-    categorias ||--o{ indicadores : aplica
-    categorias ||--o{ campos_personalizados : aplica
+    organizations ||--o{ establishments : "cuenta"
+    establishment_categories ||--o{ establishment_categories : "subcategorías"
+    establishment_categories ||--o{ establishments : "categoría"
+    companies }o--o{ establishments : "establishment_companies"
+    contacts }o--o{ establishments : "establishment_contacts"
+    contacts }o--o{ companies : "contact_companies"
+    establishments ||--o{ establishment_custom_values : "respuestas"
+    establishments ||--o{ reports : "por periodo"
+    reports ||--o{ report_custom_values : "indicadores"
+    custom_fields ||--o{ establishment_custom_values : ""
+    custom_fields ||--o{ report_custom_values : ""
+    custom_field_groups ||--o{ custom_fields : "agrupa"
+    public_forms ||--o{ public_form_tokens : "enlaces de edición"
+    surveys ||--o{ survey_questions : ""
+    surveys ||--o{ survey_links : "destinatarios"
+    surveys ||--o{ survey_responses : ""
+    survey_responses ||--o{ survey_answers : ""
 ```
 
-- **Actor**: el titular. Único por tipo y número de documento.
-- **Estado** (`pendiente`, `aprobado`, `rechazado`, `inactivo`): revisión SITUR. Solo lo cambia `RevisionService`.
-- **Etapa** (`prospecto` → `contactado` → `inscrito` → `formalizado`): relación CRM.
-- **Campos personalizados**: preguntas de perfil por categoría. Las respuestas van en `establecimientos.datos_extra`
-  (JSON) y se **validan en el servidor** contra la definición; las claves desconocidas se descartan.
-- **Indicadores / reportes**: una fila por establecimiento, frecuencia y periodo (`2026-09`, `2026-Q3`, `2026-S1`,
-  `2026`), con un valor por indicador.
-- **Actividades**: bitácora automática (trait `RegistraActividad`) con el antes y el después de cada cambio.
+- **Empresa** (`companies`): el titular. El formulario la identifica por NIT o cédula (campos personalizados).
+- **Contacto** (`contacts`): la persona de contacto, identificada por correo. Recibe los avisos y los enlaces.
+- **Establecimiento** (`establishments`): nombre, categoría, subcategoría, dirección, coordenadas, teléfono, correo,
+  web, responsable y **estado de revisión** (`pending`, `approved`, `rejected` con `status_reason`, `inactive`). Un
+  trigger (`protect_establishment_status`) solo deja cambiar el estado a administradores.
+- **Reporte** (`reports`): uno por establecimiento, frecuencia y periodo (`period_start` es el primer día del
+  periodo). Los indicadores son campos personalizados del objeto `report`. Borrador → enviado; `submitted_at` y
+  `submitted_by` los pone la base.
+- **Historial** (`record_changes`): cada cambio de una columna o de un campo personalizado, con antes, después,
+  quién y cuándo. Lo escriben triggers; el cliente solo lee.
+- **Cronología** (`activities`): notas, llamadas, reuniones, WhatsApp, correos de revisión, asociaciones y adjuntos.
+- **Adjuntos** (`attachments` + bucket privado `record-attachments`): fotos y documentos, en
+  `<organization_id>/<objeto>/<registro>/`, servidos con URLs firmadas.
 
-## Backend
+## Piezas del SITUR en el código
 
-```
-backend/app/
-├── Console/Commands/ImportarSitur.php   migración desde el SITUR anterior
-├── Enums/                               estados, etapas, roles, frecuencias…
-├── Http/Controllers/                    un controlador por recurso
-├── Http/Middleware/                     rol:… y llave de la API pública
-├── Models/                              Eloquent (tablas en español, $table explícito)
-├── Notifications/                       correos
-├── Policies/                            quién puede ver/editar cada actor y establecimiento
-├── Services/                            Registro, Establecimiento, Revision, Reporte
-└── Support/                             Reglas de validación compartidas, campos personalizados, normalizadores
-```
+| Pieza | Dónde |
+|---|---|
+| Establecimientos y reportes | `supabase/migrations/20261201090000_establishments_reports.sql`, `src/pages/Establishments.tsx`, `src/pages/StatisticalReports.tsx`, `src/components/establishments/`, `src/lib/establishmentRepository.ts` |
+| Historial y selección múltiple | `20261202090000_change_history_multiselect.sql`, `src/components/record/RecordHistory.tsx` |
+| Formulario público | `20261203090000_public_form_intake.sql`, `20261205090000_public_form_schema.sql`, `supabase/functions/situr/`, `supabase/functions/_shared/publicForm.ts`, `src/pages/PublicRegistration.tsx`, `src/components/registration/` |
+| Encuestas | `20261204090000_surveys.sql`, `src/pages/surveys/`, `src/components/surveys/`, `src/pages/PublicSurvey.tsx` |
+| Catálogo e histórico | `scripts/imctt/` |
+| Marca | `brands/imctt/` |
 
-Principios:
-
-1. **Una operación, una transacción.** La inscripción pública crea usuario, actor, contacto, caracterización y
-   establecimientos en una sola llamada (`POST /api/registro`).
-2. **Validación solo en el servidor**, con reglas compartidas (`Support/Reglas.php`) entre la inscripción y el CRM.
-3. **Autorización en dos capas**: middleware `rol:` por grupo de rutas y *policies* por registro.
-4. **Los correos nunca rompen la operación** (`Support/Notificar.php`): si falla el SMTP se registra en el log.
-5. **Enums servidos al frontend** por `/api/meta`: las etiquetas no se duplican.
-
-## Frontend
-
-```
-frontend/src/
-├── components/   ui.tsx (kit), formularios.tsx (titular, establecimiento, caracterización), Compartidos.tsx
-├── lib/          api.ts (cliente HTTP), auth.tsx, meta.ts, format.ts, types.ts
-└── pages/
-    ├── publico/  ingreso, recuperación y asistente de inscripción
-    ├── portal/   cuenta del prestador
-    └── crm/      pantallas del equipo
-```
-
-Los formularios de titular y establecimiento son **los mismos componentes** en la inscripción, el portal y el CRM,
-para que un campo nunca se comporte distinto según dónde se edite. Los errores 422 de Laravel se muestran junto a
-cada campo.
+Las reglas de validación del formulario (`publicForm.ts`) se comparten entre el navegador y la Edge Function, para que
+un dato nunca se valide distinto en un lado y en el otro.
 
 ## Pruebas
 
-```powershell
-cd backend
-C:\xampp\php\php.exe artisan test     # 58 pruebas
+```bash
+npm test          # pruebas unitarias (incluye test:situr, test:surveys y test:email)
+npm run test:db   # pruebas SQL de supabase/tests/ contra una base local (supabase start)
 ```
 
-Cubren seguridad (accesos por rol y por dueño), inscripción atómica, revisión y publicación, reportes, CRM, la
-importación desde SITUR con la forma real de sus datos y los normalizadores (veredas, coordenadas, números).
+Las del SITUR: `tests/public-form.test.ts`, `tests/situr-translate.test.ts`, `tests/situr-history.test.ts`,
+`tests/survey-logic.test.ts` y, en SQL, `supabase/tests/establishments_reports.sql`,
+`change_history_multiselect.sql`, `public_form_intake.sql`, `public_form_schema.sql` y `surveys.sql`. GitHub Actions
+(`ci.yml`) corre ambas en `a-dev`, `main` y los pull requests.

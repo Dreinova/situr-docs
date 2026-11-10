@@ -30,25 +30,25 @@ function Curvas() {
 const RUTAS = [
   {
     titulo: 'Tengo un negocio turístico',
-    texto: 'Inscríbete, mantén tus establecimientos al día, sube fotos y envía tus reportes periódicos.',
+    texto: 'Inscríbete sin crear cuenta, actualiza tus establecimientos con el enlace de tu correo y reporta tus cifras.',
     enlace: '/prestadores/inscripcion',
     accion: 'Guía para prestadores',
   },
   {
-    titulo: 'Trabajo en la Secretaría',
-    texto: 'Revisa inscripciones, haz seguimiento a cada prestador, gestiona tareas y consulta los reportes SITUR.',
-    enlace: '/equipo/inicio-y-revisiones',
+    titulo: 'Trabajo en el IMCTT',
+    texto: 'Revisa establecimientos, haz seguimiento a cada prestador, gestiona tareas, reportes estadísticos y encuestas.',
+    enlace: '/equipo/primeros-pasos',
     accion: 'Guía del equipo',
   },
   {
     titulo: 'Administro el sistema',
-    texto: 'Define categorías, preguntas, indicadores y tipos de turismo; crea usuarios y asigna roles.',
+    texto: 'Define categorías, preguntas e indicadores; invita al equipo y asigna roles y permisos.',
     enlace: '/administracion/configuracion',
     accion: 'Guía de administración',
   },
   {
     titulo: 'Mantengo el código',
-    texto: 'Arquitectura, instalación con Docker o XAMPP, API, migración desde el SITUR anterior y despliegue.',
+    texto: 'Arquitectura sobre Supabase, formulario público, migración desde el SITUR anterior y despliegue.',
     enlace: '/tecnico/arquitectura',
     accion: 'Documentación técnica',
   },
@@ -65,8 +65,8 @@ export default function Inicio(): ReactNode {
             Cada finca, café y sendero de Tenjo, en un solo lugar.
           </Heading>
           <p className={styles.bajada}>
-            El SITUR es el sistema con el que la Secretaría de Desarrollo Económico y Turismo conoce a los prestadores
-            turísticos del municipio, acompaña su formalización y publica su oferta en visitatenjo.com.
+            El SITUR es el sistema con el que el Instituto Municipal de Cultura y Turismo de Tenjo conoce a los
+            prestadores turísticos del municipio, revisa sus establecimientos y mide el turismo con sus reportes.
           </p>
           <div className={styles.botones}>
             <Link className={styles.botonClaro} to="/inicio">

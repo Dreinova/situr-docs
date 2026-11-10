@@ -1,35 +1,44 @@
 ---
-title: Establecimientos y mapa
+title: Establecimientos
 sidebar_position: 3
 ---
 
-# Establecimientos y mapa
+# Establecimientos
 
-## Lista de establecimientos
+**Establecimientos** lista las sedes y servicios de los prestadores: nombre, categoría › tipo, estado de revisión,
+teléfono, responsable y última actividad. Además de los filtros comunes (mira
+[Primeros pasos](/equipo/primeros-pasos#trabajar-con-listas)), se filtra por **categoría** y **estado**.
 
-Tarjetas con la foto de portada, el estado y si está publicado. Filtra por estado, categoría (incluye las
-complementarias), tipo de turismo, vereda y RNT.
+## Crear un establecimiento
 
-![Establecimientos](/img/capturas/crm-establecimientos.png)
+La mayoría llegan por el [formulario de inscripción](/prestadores/inscripcion). Para registrar uno a mano (por ejemplo,
+de un prestador que conociste en una visita y no tiene correo), usa **Agregar establecimientos → Crear**: nombre,
+categoría y los datos que tengas. Luego asócialo a su empresa y a su contacto desde la ficha.
 
-## Ficha del establecimiento
+## La ficha
 
-El equipo puede editar los mismos datos que el prestador, más las acciones de revisión (administradores):
-**Aprobar**, **Rechazar** y **Publicar / Retirar de la web**.
+| Parte | Qué tiene |
+|---|---|
+| **Encabezado** | Nombre, categoría › tipo, estado y **Editar establecimiento**. |
+| **Revisión** | Aprobar, rechazar o inactivar. Mira [Revisar inscripciones](/equipo/revisiones). |
+| **Información clave** | Responsable, dirección, coordenadas (con enlace a Google Maps), teléfono, correo, sitio web y fechas. |
+| **Grupos de campos** | Las preguntas generales y las **de su categoría**: solo aparecen los grupos que aplican a la categoría del establecimiento. |
+| **Actividad** | Notas, llamadas, visitas (reuniones), WhatsApp, correos de revisión y tareas. |
+| **Historial** | Cada cambio de un campo, con el valor anterior. |
+| **Derecha** | Contactos y empresas asociados, tareas, reportes, encuestas y archivos adjuntos (fotos y documentos). |
 
-![Ficha del establecimiento](/img/capturas/crm-establecimiento.png)
+:::note[Cambiar de categoría]
+Al cambiar la categoría cambian también los grupos de preguntas que se muestran y los indicadores que se le piden.
+Revisa que las preguntas de la nueva categoría queden completas.
+:::
 
-La pestaña **Reportes** muestra los periodos pendientes y el **historial** de reportes enviados. El equipo también
-puede enviar un reporte en nombre del prestador (por ejemplo, tras una llamada).
+## Registrar una visita de campo
 
-## Mapa
+Desde la ficha, **Reunión** (o **Nota**) registra lo que pasó, con fecha, participantes y adjuntos. Para tomar las
+coordenadas exactas en el lugar, edita el establecimiento desde el celular o pide al prestador que use **Usar mi
+ubicación actual** en su formulario.
 
-Todos los establecimientos con coordenadas, coloreados por estado. Sirve para ver de un vistazo **puntos mal
-ubicados** o **zonas sin oferta**. Al tocar un punto se abre un enlace a su ficha.
-
-![Mapa de establecimientos](/img/capturas/crm-mapa.png)
-
-:::tip
-El encabezado del mapa dice cuántos establecimientos **no tienen coordenadas**. Es una buena lista de pendientes para
-las visitas de campo: el botón «Estoy aquí» del formulario toma la ubicación del celular.
+:::info[Mapa]
+El SITUR anterior tenía un mapa de establecimientos. El CRM todavía no lo tiene: las coordenadas se consultan una por
+una con el enlace a Google Maps de cada ficha.
 :::

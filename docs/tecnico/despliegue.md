@@ -5,59 +5,61 @@ sidebar_position: 6
 
 # Despliegue
 
-Pensado para el mismo hosting compartido del SITUR anterior (cPanel, PHP 8.2+, MySQL/MariaDB).
+El CRM es una **aplicación estática**: `npm run build` genera `dist/` y Apache (cPanel) la sirve. Todo lo de servidor
+(base de datos, autenticación, archivos, correos y el formulario público) vive en el **proyecto de Supabase del
+IMCTT**.
 
-## API
+## Puesta en marcha (una vez)
 
-1. Subir `backend/` **con** `vendor/` (en el hosting no suele haber Composer).
-2. Apuntar el subdominio (p. ej. `apicrm.visitatenjo.com`) a `backend/public`.
-3. Crear el `.env` de producción:
-   ```ini
-   APP_ENV=production
-   APP_DEBUG=false
-   APP_URL=https://apicrm.visitatenjo.com
-   FRONTEND_URL=https://situr.visitatenjo.com
-   CORS_ALLOWED_ORIGINS=https://situr.visitatenjo.com
-   PUBLIC_API_KEY=una-llave-larga-y-aleatoria
-   DB_CONNECTION=mysql
-   DB_HOST=localhost
-   DB_DATABASE=…
-   DB_USERNAME=…
-   DB_PASSWORD=…
-   MAIL_MAILER=smtp
-   MAIL_HOST=…
-   MAIL_FROM_ADDRESS=no-reply@visitatenjo.com
-   ```
-4. Desde la terminal de cPanel:
+1. **Migraciones** en el proyecto de Supabase del cliente: `supabase db push` (o `supabase db query --linked --file …`
+   por archivo, en orden).
+2. **Cuenta y catálogo**:
    ```bash
-   php artisan key:generate
-   php artisan migrate --force --seed
-   php artisan storage:link
-   php artisan config:cache
-   php artisan route:cache
-   php artisan view:cache
+   npm run account:create                                   # cuenta del IMCTT; el fundador queda superadmin
+   node scripts/imctt/seed-situr.mjs --nit <NIT del IMCTT> > situr.sql
+   supabase db query --linked --file situr.sql
    ```
-
-:::danger[Antes de salir a producción]
-- `APP_DEBUG=false`: con `true` los errores muestran rutas y variables del servidor.
-- Cambiar la contraseña del superadministrador inicial.
-- No subir el dump de SITUR ni `storage/app/situr/` al servidor del CRM.
-:::
+   El seed activa los módulos (`establishments`, `reports`, `surveys`), carga el catálogo y crea el formulario
+   `situr`. Repetirlo es seguro.
+3. **Edge Function del formulario**:
+   ```bash
+   supabase secrets set --project-ref <ref> \
+     "SITUR_EDIT_URL=https://<dominio del CRM>/inscripcion/situr" \
+     SMTP_SERVER=… SMTP_PORT=… SMTP_USER=… SMTP_PASSWORD=… SMTP_FROM=…
+   supabase functions deploy situr
+   ```
+   Supabase bloquea los puertos 25 y 587 en las Edge Functions: el SMTP debe usar **465** o **2525**.
+4. **Marca de los correos**: secreto `EMAIL_BRAND` desde `brands/imctt/email-brand.json` (mira
+   [Marca](/tecnico/marca#correos)).
+5. **Auth** (panel de Supabase → Authentication → URL Configuration): *Site URL* con el dominio del CRM y, en
+   *Redirect URLs*, `/welcome`, `/reset-password` y `/join` de ese dominio. Secretos `APP_URL` y `APP_ORIGINS` para los
+   correos de tareas y Google Calendar.
+6. **Histórico**: correr la [migración](/tecnico/migracion).
 
 ## Frontend
 
-```powershell
-cd frontend
-$env:VITE_API_URL="https://apicrm.visitatenjo.com"; npm run build
-```
+Al hacer **push a `main`** en `oblicuaDev/imctt-crm`, GitHub Actions (`deploy.yml`) instala, revisa, compila, sube
+`dist/` por FTPS y verifica el sitio. `a-dev` no se publica.
 
-Subir el contenido de `frontend/dist/` al subdominio del CRM (p. ej. `situr.visitatenjo.com`). Incluye un `.htaccess`
-para que Apache sirva `index.html` en cualquier ruta de la SPA.
+En el repositorio (Settings → Secrets and variables → Actions):
+
+| Nombre | Tipo | Valor |
+|---|---|---|
+| `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_SERVER_DIR` | Secret | Cuenta FTP limitada a la carpeta del subdominio (`FTP_SERVER_DIR = ./`). |
+| `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Secret | Los del proyecto del IMCTT (la clave pública, **nunca** la de servicio). |
+| `BRAND` | Variable | `imctt` |
+| `DEPLOY_URL` | Variable | `https://<dominio del CRM>` |
+
+`public/.htaccess` fuerza HTTPS y manda todas las rutas de la SPA (incluidas `/inscripcion/situr` y `/encuesta/…`) a
+`index.html`.
+
+Para volver a una versión anterior: `git revert <commit>` en `main` y push. Las migraciones de base de datos **no** se
+revierten con esto.
 
 ## Documentación
 
 Se publica sola en **https://situr-docs.oblicua.co** (GitHub Pages) con cada push a `main`, mediante
-`.github/workflows/deploy.yml`. El progreso se ve en la pestaña **Actions** del repositorio `Dreinova/situr-docs`.
+`.github/workflows/deploy.yml` de este repositorio (`Dreinova/situr-docs`).
 
 Para cambiar de dominio:
 
@@ -67,7 +69,10 @@ Para cambiar de dominio:
 ## Día del cambio
 
 1. Poner el SITUR anterior en solo lectura (o en mantenimiento).
-2. Exportar la base y `uploads/` y ejecutar la [migración](/tecnico/migracion).
-3. Cambiar en WordPress las llamadas a la [API pública](/tecnico/api-publica).
-4. Redirigir `situr.visitatenjo.com` al nuevo frontend.
-5. Informar a los prestadores: **mismo correo y misma contraseña**.
+2. Exportar la base y `uploads/` y ejecutar la [migración](/tecnico/migracion) (se puede repetir).
+3. Redirigir la dirección anterior del formulario a la nueva, por ejemplo `registro.visitatenjo.com` →
+   `https://<dominio del CRM>/inscripcion/situr`.
+4. Avisar a los prestadores: **ya no hay contraseña**; entran con «Actualizar mi inscripción» y su correo.
+5. **No apagar `api-situr`** mientras visitatenjo.com lea de ella: la [API para el sitio](/tecnico/visitatenjo) está
+   pendiente.
+6. Probar el envío real de correos (inscripción, enlace y revisión) con el SMTP del cliente.

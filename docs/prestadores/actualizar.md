@@ -1,49 +1,51 @@
 ---
-title: Mi cuenta
+title: Actualizar mi inscripción
 sidebar_position: 2
 ---
 
-# Mi cuenta
+# Actualizar mi inscripción
 
-Al entrar con tu correo y contraseña llegas a tu **inicio**: el estado de tu inscripción, los reportes que tienes
-pendientes y tus establecimientos.
+En el nuevo SITUR **no hay usuario ni contraseña**. Para ver o cambiar tus datos usas un **enlace personal** que llega
+al correo de la persona de contacto.
 
-![Inicio del prestador](/img/capturas/portal-inicio.png)
+## Pedir el enlace
 
-## Estados de la inscripción
+- Al inscribirte te llega uno automáticamente.
+- También llega con cada aviso de revisión (aprobación o rechazo).
+- Si no lo tienes o ya venció, entra al formulario y usa **Pide un enlace para actualizar tus datos**: escribe el
+  correo con el que te inscribiste y toca **Enviar enlace**.
+
+El enlace **vence a los 7 días**. Si lo abres después, el formulario te ofrece pedir uno nuevo.
+
+:::note
+Por seguridad, la respuesta es la misma exista o no una inscripción con ese correo. Si no te llega nada, revisa el
+correo no deseado y confirma que escribiste el mismo correo de la inscripción.
+:::
+
+## Qué puedes hacer con el enlace
+
+El formulario se abre con tu inscripción guardada, en los mismos pasos de la [inscripción](/prestadores/inscripcion):
+
+- corregir los datos del titular, del contacto (menos el correo) y de cada establecimiento,
+- **agregar establecimientos** nuevos,
+- **agregar o quitar** fotos y documentos,
+- actualizar los **indicadores** del último periodo (mira [Mis reportes](/prestadores/reportes)).
+
+Toca **Guardar cambios** al final.
+
+No se pueden **eliminar establecimientos** ni **cambiar el correo** desde el formulario. Para eso, escríbele al
+Instituto.
+
+## Estado de cada establecimiento
 
 | Estado | Qué significa | Qué hacer |
 |---|---|---|
-| **Pendiente** | La Secretaría está revisando. | Esperar el correo. Puedes ir completando fotos y datos. |
-| **Aprobado** | Tus establecimientos aprobados están en visitatenjo.com. | Mantener la información al día y enviar los reportes. |
-| **Rechazado** | Hay información por corregir. El motivo aparece arriba en rojo y te llegó por correo. | Corregir lo indicado y guardar: vuelve sola a revisión. |
+| **Pendiente de revisión** | El Instituto lo está revisando. | Esperar el correo. Mientras tanto puedes completar fotos y datos. |
+| **Aprobado** | La información fue revisada y aprobada. | Mantenerla al día y reportar tus cifras. |
+| **Rechazado** | Hay algo por corregir. El **motivo** aparece en el formulario y llegó por correo. | Corregir lo indicado y guardar: el establecimiento **vuelve solo a revisión**. |
+| **Inactivo** | El Instituto lo marcó como fuera de operación. | Si volviste a operar, escríbele al Instituto. |
 
-## Editar un establecimiento
-
-Toca la tarjeta del establecimiento. Tiene cuatro pestañas:
-
-- **Datos**: nombre, categoría, descripción, RNT, ubicación, contacto, redes y preguntas de tu categoría.
-- **Fotos**: agrega, elimina o elige la **portada** (pasa el cursor sobre la foto y toca la estrella).
-- **Reportes**: los periodos que debes reportar. Mira [Reportes](/prestadores/reportes).
-- **Documentos**: sube RUT, cámara de comercio o certificado RNT para agilizar la revisión.
-
-![Editar un establecimiento](/img/capturas/portal-establecimiento.png)
-
-Para agregar una sede nueva usa **Agregar establecimiento** en tu inicio.
-
-:::note
-Los cambios en un establecimiento ya aprobado se publican de inmediato en la web. La Secretaría ve el historial de
-cambios.
+:::info[¿Venías del SITUR anterior?]
+Tus datos ya están en el nuevo sistema, con su estado. Pide el enlace con el correo que registraste. Si tu registro
+no tenía correo en el formulario, se usó el de tu cuenta del SITUR anterior.
 :::
-
-## Mis datos
-
-Desde **Mis datos** puedes actualizar los datos del titular, el empleo y finanzas de cada año, los documentos del
-titular y tu **contraseña**.
-
-![Mis datos](/img/capturas/portal-mis-datos.png)
-
-## Olvidé mi contraseña
-
-En la pantalla de ingreso toca **Olvidé mi contraseña**, escribe tu correo y sigue el enlace que te llega (vence en
-una hora). Al cambiarla se cierran las sesiones abiertas en otros dispositivos.

@@ -1,86 +1,93 @@
 ---
-title: API interna
-sidebar_position: 4
+title: Formulario público
+sidebar_position: 3
 ---
 
-# API interna
+# Formulario público de inscripción
 
-Todas las rutas están en `backend/routes/api.php` y responden JSON. Las privadas usan
-`Authorization: Bearer <token>` (Sanctum), que se obtiene en `POST /api/auth/login`.
+La inscripción es una página pública del CRM, **`/inscripcion/situr`**, sin sesión. Cada inscripción se guarda como
+**empresa**, **contacto** y **establecimientos** (pendientes de revisión), asociados entre sí, en una sola
+transacción.
 
-## Errores
-
-| Código | Significado | Cuerpo |
-|---|---|---|
-| 401 | Sin sesión o token vencido | `{"message": "Unauthenticated."}` |
-| 403 | Sin permiso para esa acción o ese registro | `{"message": "…"}` |
-| 404 | No existe | `{"message": "Recurso no encontrado."}` |
-| 422 | Validación | `{"message": "…", "errors": {"campo": ["mensaje"]}}` |
-| 429 | Demasiados intentos (login, registro: 10 por minuto) | |
-
-## Públicas
-
-| Método | Ruta | Descripción |
-|---|---|---|
-| GET | `/api/salud` | Verificación de funcionamiento. |
-| GET | `/api/meta` | Catálogos, campos personalizados y listas de valores (enums). |
-| POST | `/api/auth/login` | `{email, password}` → `{token, user}` |
-| POST | `/api/auth/olvide-contrasena` | Envía el enlace (respuesta idéntica exista o no el correo). |
-| POST | `/api/auth/restablecer-contrasena` | `{token, email, password, password_confirmation}` |
-| POST | `/api/registro` | Inscripción completa en una transacción. |
-
-## Prestadores y equipo (con autorización por dueño)
-
-| Método | Ruta |
-|---|---|
-| GET / POST | `/api/auth/me`, `/api/auth/logout`, `/api/auth/cambiar-contrasena` |
-| GET / PUT | `/api/portal`, `/api/portal/caracterizacion` |
-| GET / PUT | `/api/actores/{id}` |
-| POST / PUT / DELETE | `/api/actores/{id}/contactos`, `/api/contactos/{id}` |
-| POST / GET / PUT / DELETE | `/api/actores/{id}/establecimientos`, `/api/establecimientos/{id}` |
-| POST / PATCH / DELETE | `/api/establecimientos/{id}/imagenes`, `/api/imagenes/{id}` |
-| POST / GET / DELETE | `/api/{actores\|establecimientos}/{id}/documentos`, `/api/documentos/{id}/descargar` |
-| GET / POST | `/api/establecimientos/{id}/reportes/pendientes`, `/api/establecimientos/{id}/reportes` |
-
-## Solo equipo (gestor, administrador)
-
-| Método | Ruta |
-|---|---|
-| GET | `/api/dashboard` |
-| GET / POST / DELETE | `/api/actores`, `/api/actores/{id}` |
-| POST | `/api/actores/{id}/revision` *(administradores)* |
-| PUT / GET | `/api/actores/{id}/etiquetas`, `/api/actores/{id}/timeline` |
-| GET | `/api/establecimientos` |
-| POST / PUT | `/api/establecimientos/{id}/revision`, `/api/establecimientos/{id}/publicacion` *(administradores)* |
-| GET / POST / PUT / DELETE | `/api/interacciones`, `/api/actores/{id}/interacciones`, `/api/interacciones/{id}` |
-| GET / POST / PUT / DELETE | `/api/tareas` |
-| GET | `/api/reportes-resumen?frecuencia=&periodo=&categoria_id=` |
-| GET | `/api/exportes/{actores\|establecimientos\|reportes}` (CSV UTF-8 con BOM, separador `;`) |
-| GET | `/api/equipo`, `/api/catalogos/{tipo}` |
-| POST / PUT / DELETE | `/api/catalogos/{tipo}/{id}` *(administradores)* |
-| GET / POST / PUT | `/api/usuarios` *(administradores)* |
-
-`{tipo}` de catálogo: `categorias`, `subcategorias`, `campos`, `indicadores`, `tipos-turismo`, `veredas`, `etiquetas`.
-
-## Ejemplo: inscripción
-
-```json title="POST /api/registro"
-{
-  "cuenta": {"email": "finca@ejemplo.com", "password": "clave-segura", "password_confirmation": "clave-segura"},
-  "acepta_tratamiento_datos": true,
-  "actor": {"tipo_persona": "natural", "nombre": "Ana Rodríguez", "tipo_documento": "cc", "numero_documento": "52123456"},
-  "contacto": {"nombre": "Ana Rodríguez", "celular": "3001234567"},
-  "caracterizacion": {"total_ingresos": 50000000, "empleo_permanente_mujeres": 2},
-  "establecimientos": [{
-    "nombre": "Finca El Mirador",
-    "categoria_id": 2,
-    "tipos_turismo": [4],
-    "tiene_rnt": true, "rnt": "123456",
-    "zona": "rural", "vereda_id": 11,
-    "latitud": 4.889, "longitud": -74.162,
-    "datos_extra": {"horario_atencion": "Viernes a domingo"}
-  }]
-}
+```text
+/inscripcion/situr ──► Edge Function situr ──► public_form_intake (una transacción)
+ (página del CRM)       valida con las mismas      empresa (por NIT o cédula)
+ esquema del CRM        reglas del navegador        contacto (por correo)
+ borrador local         fotos y documentos          establecimientos + valores + indicadores
+                        enlace por correo
 ```
 
-Respuesta `201` con `token`, `user`, `actor_id` y los `establecimientos` creados (para subir fotos después).
+## Piezas
+
+| Pieza | Dónde | Qué hace |
+|---|---|---|
+| Migraciones | `20261203090000_public_form_intake.sql`, `20261205090000_public_form_schema.sql` | Dominio de empresa opcional, `external_key` en campos y categorías, `public_forms` (con `settings`), `public_form_tokens` y las funciones `public_form_*` (solo `service_role`). |
+| Reglas | `supabase/functions/_shared/publicForm.ts` | Qué campos aplican, validación y documento para `public_form_intake`. Lo usan el navegador y la función. |
+| Edge Function | `supabase/functions/situr/` | Rutas (`index.ts`), correos de revisión (`emails.ts`), traducción del formato del SITUR anterior (`translate.ts`, `situr-fields.json`). |
+| Página | `src/pages/PublicRegistration.tsx`, `src/components/registration/`, `src/lib/publicFormApi.ts` | Pasos, borrador en el navegador, fotos y documentos, edición con enlace. |
+| Catálogo | `scripts/imctt/seed-situr.mjs`, `situr-form-settings.json` | SQL con categorías, campos (`external_key` = id de SITUR), indicadores, el formulario `situr` y los módulos. |
+
+## Rutas de la Edge Function `situr`
+
+`verify_jwt = false`: la función decide qué exige cada ruta.
+
+| Método | Ruta | Qué hace |
+|---|---|---|
+| GET | `/situr/esquema` | Categorías, grupos, campos e indicadores del formulario (`public_form_schema`) y sus `settings`. |
+| POST | `/situr/inscripcion` | `{ registration, token? }`: valida y crea o actualiza. Responde los errores por campo. |
+| GET | `/situr/inscripcion?token=…` | La inscripción guardada, para corregir con el enlace. |
+| POST | `/situr/enlace` | `{ email }`: envía el enlace de edición. Responde lo mismo exista o no el correo. |
+| POST | `/situr/revision` | `{ establishment_id }`, **con la sesión de un administrador del CRM**: avisa al prestador la aprobación o el rechazo. |
+| POST | `/situr/archivos` | `multipart`: `token`, `establishment_id`, `field_key?`, `file` (máx. 10 MB). |
+| DELETE | `/situr/archivos/:id?token=…` | Quita un archivo propio. |
+
+Secretos: `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` (del entorno), `SITUR_FORM_SLUG` (por defecto `situr`),
+`SITUR_EDIT_URL` (la página del formulario en el CRM) y los `SMTP_*` del mailer compartido. Por convención, la función
+se llama igual que el `slug` del formulario.
+
+## Reglas
+
+- **Sin cuentas de prestador.** Al inscribirse se envía un enlace con un token de **7 días**; en la base solo queda su
+  hash.
+- **Empresa:** se busca por NIT (jurídica) o cédula (natural); si no existe, por el dominio del correo corporativo; si
+  no, se crea. La empresa automática por dominio del CRM no aplica a estas inscripciones.
+- **Contacto:** por correo. El mismo correo en dos inscripciones deja un solo contacto.
+- **Establecimientos** nuevos quedan *pendientes*; si el prestador corrige uno rechazado, vuelve a pendiente.
+- **Indicadores:** las preguntas numéricas con frecuencia van al reporte del **último periodo cerrado**; si ya existe
+  ese reporte, se actualiza.
+- **Validación igual en el navegador y en el servidor** (`validateRegistration`): tipos, opciones, obligatorios,
+  documento, correo y coordenadas.
+- **Archivos:** se suben después de guardar la inscripción, ya con el id de cada establecimiento. Si alguno falla, la
+  inscripción queda guardada y la página dice cuál.
+- **Con el enlace** no se pueden borrar establecimientos ni cambiar el correo.
+- **Aviso de revisión:** se envía a cada contacto del establecimiento, queda en `email_messages` (con el límite por
+  hora de los demás correos) y en la cronología. Si falla, el cambio de estado se conserva.
+
+## Textos y reglas del formulario
+
+Están en `public_forms.settings`. Se editan en `scripts/imctt/situr-form-settings.json` y se cargan volviendo a correr
+el seed.
+
+| Clave | Qué controla |
+|---|---|
+| `headline`, `intro`, `success`, `consent`, `footer` | Textos de la página, mensaje final y autorización de datos. |
+| `steps` | Títulos de los pasos. |
+| `person` | Tipo de persona: el campo, la opción jurídica, el documento que identifica a la empresa en cada opción y los campos que solo aplican a una. |
+| `conditions` | Campos que dependen de otro (número de RNT si «¿Tiene RNT?» es «Sí»; vereda si la zona es «Rural»). |
+| `defaults` | Valores iniciales (país, departamento, municipio). |
+| `required_fields` | Obligatorias **solo en el formulario**; en el CRM siguen opcionales. |
+| `hidden_fields` | Campos internos que el formulario no muestra (`situr_id`). |
+
+El orden y los nombres de las secciones salen de los **grupos de campos** del CRM.
+
+## Encuestas públicas
+
+Las encuestas no pasan por una Edge Function: la página `/encuesta/:slug` llama directamente a `survey_public` y
+`survey_submit`, funciones de Postgres permitidas al rol `anon`. Solo aceptan respuestas con la encuesta publicada y
+dentro de su periodo, y validan cada respuesta por tipo. El enlace personal de un destinatario (`?r=<token>`) asocia la
+respuesta a su registro.
+
+## API del CRM
+
+La API REST genérica del CRM (`crm-api`, llaves por cuenta en Configuración → Webhooks y API) cubre contactos, negocios,
+facturas y cotizaciones. **No** expone establecimientos, reportes ni encuestas. Mira [visitatenjo.com](/tecnico/visitatenjo).

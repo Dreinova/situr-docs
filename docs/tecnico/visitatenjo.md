@@ -1,100 +1,40 @@
 ---
-title: API pública (visitatenjo.com)
-sidebar_position: 3
+title: visitatenjo.com
+sidebar_position: 4
 ---
 
-# API pública para visitatenjo.com
+# Integración con visitatenjo.com
 
-API de solo lectura para el WordPress de visitatenjo.com. Devuelve **solo** establecimientos aprobados y publicados,
-y **nunca** datos personales del titular (documento, correo o teléfono del titular).
+:::danger[Pendiente]
+El CRM **todavía no tiene una API pública** para que el WordPress de visitatenjo.com lea los establecimientos
+aprobados. La API que se diseñó en `crm-tenjo` (`/api/publico/establecimientos`, Laravel) **no se migró** al CRM, y la
+API genérica del CRM (`crm-api`) no expone establecimientos.
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| GET | `/api/publico/establecimientos` | Lista paginada. |
-| GET | `/api/publico/establecimientos/{slug}` | Detalle con todas las fotos. |
-| GET | `/api/publico/categorias` | Categorías y subcategorías con el número de publicados. |
-| GET | `/api/publico/tipos-turismo` | Tipos de turismo con el número de publicados. |
-
-## Filtros del listado
-
-| Parámetro | Ejemplo | Nota |
-|---|---|---|
-| `categoria` | `restaurantes` | Coincide con la categoría principal **o** una complementaria. |
-| `subcategoria` | `glamping` | |
-| `tipo_turismo` | `senderismo` | Reemplaza el filtro por `field_1766013834262` del SITUR anterior. |
-| `vereda` | `juaica` | |
-| `q` | `finca` | Busca en el nombre. |
-| `por_pagina` | `200` | Máximo 200 (antes había un `LIMIT 50` fijo). |
-| `page` | `2` | |
-
-## Autenticación
-
-Si el servidor define `PUBLIC_API_KEY`, se exige el header `X-Api-Key`. Guarda la llave en `wp-config.php`, **nunca**
-en código de navegador:
-
-```php title="wp-config.php"
-define('CRM_TENJO_API_KEY', 'la-llave-del-servidor');
-```
-
-## Ejemplo en el tema de WordPress
-
-Así quedaría `single-pantalla-donde-dormir-en-tenjo.php`: el filtro lo hace el servidor en lugar de descargar todo y
-filtrar en PHP.
-
-```php
-$res = wp_remote_get('https://apicrm.visitatenjo.com/api/publico/establecimientos?tipo_turismo=alojamiento&por_pagina=200', [
-    'headers' => ['X-Api-Key' => CRM_TENJO_API_KEY, 'Accept' => 'application/json'],
-    'timeout' => 15,
-]);
-
-if (! is_wp_error($res) && wp_remote_retrieve_response_code($res) === 200) {
-    $lista = json_decode(wp_remote_retrieve_body($res), true)['data'] ?? [];
-    foreach ($lista as $est) {
-        echo esc_html($est['nombre']);
-        echo esc_url($est['portada']['url'] ?? '');
-    }
-}
-```
-
-:::tip[Caché]
-Guarda la respuesta con `set_transient('situr_alojamiento', $lista, 15 * MINUTE_IN_SECONDS)` para no consultar la
-API en cada visita.
+Mientras no exista, **no se debe apagar `api-situr`** si el sitio sigue leyendo de ella, aunque el formulario nuevo ya
+esté publicado. Los datos nuevos (inscripciones y aprobaciones hechas en el CRM) no llegarán al sitio hasta que esta
+integración esté lista.
 :::
 
-## Respuesta
+## Qué debe cumplir la nueva API
 
-```json title="GET /api/publico/establecimientos?tipo_turismo=senderismo"
-{
-  "current_page": 1,
-  "last_page": 1,
-  "total": 4,
-  "data": [
-    {
-      "id": 12,
-      "nombre": "Finca El Mirador",
-      "slug": "finca-el-mirador",
-      "descripcion": "Glamping con vista a la Peña de Juaica.",
-      "direccion": "Vereda Juaica, km 3",
-      "municipio": "Tenjo",
-      "zona": "rural",
-      "latitud": 4.889,
-      "longitud": -74.162,
-      "telefono": "3001234567",
-      "pagina_web": "https://fincaelmirador.co",
-      "redes_sociales": [{"red": "instagram", "url": "https://instagram.com/fincaelmirador"}],
-      "metodos_pago": ["efectivo", "nequi"],
-      "tiene_rnt": true,
-      "rnt": "123456",
-      "prestador": "Finca El Mirador SAS",
-      "categoria": {"id": 2, "slug": "alojamiento", "nombre": "Establecimientos de alojamiento turístico"},
-      "subcategoria": {"id": 6, "slug": "glamping", "nombre": "Glamping"},
-      "categorias_adicionales": [],
-      "tipos_turismo": [{"id": 4, "slug": "senderismo", "nombre": "Senderismo"}],
-      "vereda": {"id": 11, "slug": "juaica", "nombre": "Juaica"},
-      "portada": {"id": 40, "url": "https://apicrm.visitatenjo.com/storage/establecimientos/12/foto.jpg", "es_portada": true, "orden": 0}
-    }
-  ]
-}
-```
+Los requisitos que ya estaban definidos para la API de `crm-tenjo` siguen vigentes:
 
-La descripción es **texto plano** (con saltos de línea); conviértela con `wpautop(esc_html($est['descripcion']))`.
+- **Solo lectura** y solo establecimientos **aprobados** (`establishments.status = 'approved'`) de la cuenta del IMCTT.
+- **Nunca** datos personales del titular: documento, correo o teléfono de la empresa o del contacto.
+- Filtros por **categoría** (principal o complementaria), **subcategoría**, **tipo de turismo**, **vereda** y texto,
+  con paginación en el servidor (el sitio no debe descargar todo y filtrar en PHP).
+- Detalle con todas las **fotos**. Hoy las fotos están en el bucket **privado** `record-attachments`: la API debe
+  servirlas con URLs firmadas o publicar copias en un bucket público.
+- Autenticación con una llave guardada en `wp-config.php`, nunca en código de navegador.
+
+## Decisiones abiertas
+
+| Tema | Opciones |
+|---|---|
+| **Dónde vive** | Una ruta de lectura en la Edge Function `situr` (por ejemplo `GET /situr/publico/establecimientos`) o una función de Postgres expuesta a `anon` con una vista que solo muestre columnas públicas. |
+| **Publicar ≠ aprobar** | El SITUR anterior y `crm-tenjo` separaban «aprobado» de «publicado en la web» (para retirar un establecimiento sin rechazarlo). El CRM solo tiene el estado de revisión; si se necesita, agregarlo como campo personalizado o como estado. |
+| **Tipos de turismo** | En el CRM son una pregunta de selección múltiple (categorías complementarias), no una tabla. La API debe exponerlos con un identificador estable (`external_key` de la opción). |
+| **Veredas** | Son opciones de un campo del establecimiento; mismo caso que los tipos de turismo. |
+
+Cuando la API exista, esta página debe documentar las rutas, los filtros, el formato de respuesta y el ejemplo para el
+tema de WordPress.
